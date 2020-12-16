@@ -17,10 +17,10 @@ help:
 	@echo 'Usage:'
 	@echo '    make build           Compile the project.'
 	@echo '    make build-alpine    Compile optimized for alpine linux.'
-	@echo '    make package         Build final docker image with just the go binary inside'
-	@echo '    make tag             Tag image created by package with latest, git commit and version'
+	@echo '    make package         Build final docker image with just the go binary inside.'
+	@echo '    make tag             Tag image created by package with latest, git commit and version.'
 	@echo '    make test            Run tests on a compiled project.'
-	@echo '    make push            Push tagged images to registry'{% endif %}
+	@echo '    make push            Push tagged images to registry.'
 	@echo '    make clean           Clean the directory tree.'
 	@echo
 
