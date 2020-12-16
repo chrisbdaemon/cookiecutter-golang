@@ -21,6 +21,19 @@ def remove_file(filename):
     if os.path.exists(fullpath):
         os.remove(fullpath)
 
+def init_gomod():
+    """
+    Initialises go module on the new project folder
+    """
+    GOMOD_COMMANDS = [
+        "go mod init github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.app_name }}".split(' '),
+        "go mod tidy".split(' ')
+    ]
+
+    for command in GOMOD_COMMANDS:
+        gomod = Popen(command, cwd=PROJECT_DIRECTORY)
+        gomod.wait()
+
 def init_git():
     """
     Initialises git on the new project folder
@@ -34,32 +47,6 @@ def init_git():
     for command in GIT_COMMANDS:
         git = Popen(command, cwd=PROJECT_DIRECTORY)
         git.wait()
-
-
-def remove_docker_files():
-    """
-    Removes files needed for docker if it isn't going to be used
-    """
-    for filename in ["Dockerfile",]:
-        os.remove(os.path.join(
-            PROJECT_DIRECTORY, filename
-        ))
-
-def remove_viper_files():
-    """
-    Removes files needed for viper config utils
-    """
-    shutil.rmtree(os.path.join(
-        PROJECT_DIRECTORY, "config"
-    ))
-
-def remove_logrus_files():
-    """
-    Removes files needed for viper config utils
-    """
-    shutil.rmtree(os.path.join(
-        PROJECT_DIRECTORY, "log"
-    ))
 
 def remove_cobra_files():
     """
@@ -77,18 +64,6 @@ def remove_circleci_files():
         PROJECT_DIRECTORY, ".circleci"
     ))
 
-# 1. Remove Dockerfiles if docker is not going to be used
-if '{{ cookiecutter.use_docker }}'.lower() != 'y':
-    remove_docker_files()
-
-# 2. Remove viper config if not seleted
-if '{{ cookiecutter.use_viper_config }}'.lower() != 'y':
-    remove_viper_files()
-
-# 3. Remove logrus utils if not seleted
-if '{{ cookiecutter.use_logrus_logging }}'.lower() != 'y':
-    remove_logrus_files()
-
 # 4. Remove cobra utils if not seleted
 if '{{ cookiecutter.use_cobra_cmd }}'.lower() != 'y':
     remove_cobra_files()
@@ -102,11 +77,7 @@ else:
     remove_file(".travis.yml")
     remove_circleci_files()
 
-# 6. Remove files depending on selection of mod or dep
-if '{{ cookiecutter.go_mod_or_dep}}'.lower() == 'mod':
-    remove_file("Gopkg.toml")
-else:
-    remove_file("go.mod")
+init_gomod()
 
 # 7. Initialize Git (should be run after all file have been modified or deleted)
 if '{{ cookiecutter.use_git }}'.lower() == 'y':
